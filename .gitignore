@@ -3,6 +3,8 @@ node_modules/
 
 # Build output
 dist/
+.rollup.cache/
+.tsbuildinfo
 
 # Environment files
 .env
