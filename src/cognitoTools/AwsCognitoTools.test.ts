@@ -136,6 +136,46 @@ describe('AwsCognitoTools', () => {
         'Either poolId/env var or env is required',
       );
     });
+    it('discovers pool by env convention across multiple pages', async () => {
+      mockSend
+        .mockResolvedValueOnce({
+          UserPools: [{ Id: 'pool-111', Name: 'myapp-staging' }],
+          NextToken: 'token-1',
+        })
+        .mockResolvedValueOnce({
+          UserPools: [{ Id: 'pool-222', Name: 'myapp-dev' }],
+        })
+        .mockResolvedValueOnce({
+          UserPool: { Id: 'pool-222', Name: 'myapp-dev' },
+        });
+
+      const pool = await tools.resolveUserPool({ env: 'dev' });
+      expect(pool.Id).toBe('pool-222');
+      expect(mockSend).toHaveBeenCalledTimes(3);
+      expect(mockSend.mock.calls[0]?.[0]).toBeInstanceOf(ListUserPoolsCommand);
+      expect(mockSend.mock.calls[1]?.[0]).toBeInstanceOf(ListUserPoolsCommand);
+      expect(mockSend.mock.calls[2]?.[0]).toBeInstanceOf(
+        DescribeUserPoolCommand,
+      );
+    });
+
+    it('respects COGNITO_LIST_USER_POOLS_MAX_RESULTS env variable', async () => {
+      process.env.COGNITO_LIST_USER_POOLS_MAX_RESULTS = '10';
+      mockSend
+        .mockResolvedValueOnce({
+          UserPools: [{ Id: 'pool-222', Name: 'myapp-dev' }],
+        })
+        .mockResolvedValueOnce({
+          UserPool: { Id: 'pool-222', Name: 'myapp-dev' },
+        });
+
+      await tools.resolveUserPool({ env: 'dev' });
+
+      const listCall = mockSend.mock.calls[0]?.[0] as ListUserPoolsCommand;
+      expect(listCall.input.MaxResults).toBe(10);
+
+      delete process.env.COGNITO_LIST_USER_POOLS_MAX_RESULTS;
+    });
   });
 
   describe('listAllUsers', () => {

@@ -197,13 +197,33 @@ export class AwsCognitoTools {
     }
 
     this.logger.debug(`Discovering User Pool for env '${env}'...`);
-    const poolsRes = await this.client.send(
-      new ListUserPoolsCommand({ MaxResults: 60 }),
-    );
 
-    const match = (poolsRes.UserPools ?? []).find((pool) =>
-      pool.Name?.endsWith(`-${env}`),
-    );
+    const maxResultsStr = process.env.COGNITO_LIST_USER_POOLS_MAX_RESULTS;
+    const maxResults =
+      maxResultsStr && !Number.isNaN(Number(maxResultsStr))
+        ? Number(maxResultsStr)
+        : 60;
+
+    // We can confidently assert the properties we care about matching DescribeUserPoolResponse['UserPool']
+    let match: NonNullable<DescribeUserPoolResponse['UserPool']> | undefined;
+    let nextToken: string | undefined;
+
+    do {
+      const poolsRes = await this.client.send(
+        new ListUserPoolsCommand({
+          MaxResults: maxResults,
+          ...(nextToken ? { NextToken: nextToken } : {}),
+        }),
+      );
+
+      match = (poolsRes.UserPools ?? []).find((pool) =>
+        pool.Name?.endsWith(`-${env}`),
+      );
+
+      if (match) break;
+
+      nextToken = poolsRes.NextToken;
+    } while (nextToken);
 
     if (!match?.Id) {
       throw new Error(`No User Pool found matching convention '*-${env}'.`);
