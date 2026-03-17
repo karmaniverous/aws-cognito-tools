@@ -156,6 +156,30 @@ export class AwsCognitoTools {
   }
 
   /**
+   * Describe a User Pool by ID, with friendly error handling.
+   *
+   * @throws If the pool does not exist or the describe call fails.
+   */
+  private async describePool(
+    poolId: string,
+  ): Promise<NonNullable<DescribeUserPoolResponse['UserPool']>> {
+    try {
+      const res = await this.client.send(
+        new DescribeUserPoolCommand({ UserPoolId: poolId }),
+      );
+      if (!res.UserPool) {
+        throw new Error(`User Pool ${poolId} not found.`);
+      }
+      return res.UserPool;
+    } catch (err) {
+      if (isResourceNotFoundException(err)) {
+        throw new Error(`User Pool ${poolId} not found.`);
+      }
+      throw err;
+    }
+  }
+
+  /**
    * Resolve a Cognito User Pool by explicit ID or name convention.
    *
    * Resolution order:
@@ -174,20 +198,7 @@ export class AwsCognitoTools {
 
     if (effectivePoolId) {
       this.logger.debug(`Describing User Pool ${effectivePoolId}...`);
-      try {
-        const res = await this.client.send(
-          new DescribeUserPoolCommand({ UserPoolId: effectivePoolId }),
-        );
-        if (!res.UserPool) {
-          throw new Error(`User Pool ${effectivePoolId} not found.`);
-        }
-        return res.UserPool;
-      } catch (err) {
-        if (isResourceNotFoundException(err)) {
-          throw new Error(`User Pool ${effectivePoolId} not found.`);
-        }
-        throw err;
-      }
+      return this.describePool(effectivePoolId);
     }
 
     if (!env) {
@@ -213,7 +224,6 @@ export class AwsCognitoTools {
         ? Number(maxResultsStr)
         : 60;
 
-    // We can confidently assert the properties we care about matching DescribeUserPoolResponse['UserPool']
     let match: NonNullable<DescribeUserPoolResponse['UserPool']> | undefined;
     let nextToken: string | undefined;
 
@@ -239,23 +249,7 @@ export class AwsCognitoTools {
     }
 
     this.logger.debug(`Found pool '${String(match.Name)}' (${match.Id}).`);
-
-    try {
-      const descRes = await this.client.send(
-        new DescribeUserPoolCommand({ UserPoolId: match.Id }),
-      );
-
-      if (!descRes.UserPool) {
-        throw new Error(`Failed to describe User Pool ${match.Id}.`);
-      }
-
-      return descRes.UserPool;
-    } catch (err) {
-      if (isResourceNotFoundException(err)) {
-        throw new Error(`User Pool ${match.Id} not found.`);
-      }
-      throw err;
-    }
+    return this.describePool(match.Id);
   }
 
   /**
