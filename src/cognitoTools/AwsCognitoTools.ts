@@ -201,8 +201,8 @@ export class AwsCognitoTools {
       new ListUserPoolsCommand({ MaxResults: 60 }),
     );
 
-    const match = (poolsRes.UserPools ?? []).find((p) =>
-      p.Name?.endsWith(`-${env}`),
+    const match = (poolsRes.UserPools ?? []).find((pool) =>
+      pool.Name?.endsWith(`-${env}`),
     );
 
     if (!match?.Id) {
@@ -306,37 +306,44 @@ export class AwsCognitoTools {
     );
 
     let purged = 0;
+    let paginationToken: string | undefined;
 
-    for (;;) {
+    do {
+      // 1. Fetch a batch of users (Cognito maximum is 60)
       const res = await this.client.send(
-        new ListUsersCommand({ UserPoolId: poolId, Limit: 1 }),
+        new ListUsersCommand({
+          UserPoolId: poolId,
+          ...(paginationToken ? { PaginationToken: paginationToken } : {}),
+        }),
       );
-
-      const user = (res.Users ?? []).at(0);
-
-      if (!user?.Username) break;
-
-      try {
-        await this.client.send(
-          new AdminDeleteUserCommand({
-            UserPoolId: poolId,
-            Username: user.Username,
-          }),
-        );
-        purged++;
-        this.logger.info(
-          `  Deleted user '${user.Username}' [${String(purged)}].`,
-        );
-      } catch (err) {
-        if (isUserNotFoundException(err)) {
-          this.logger.debug(
-            `  User '${user.Username}' already deleted. Skipping.`,
+      const users = res.Users ?? [];
+      // 2. Iterate and delete the users in the current batch
+      for (const user of users) {
+        if (!user.Username) continue;
+        try {
+          await this.client.send(
+            new AdminDeleteUserCommand({
+              UserPoolId: poolId,
+              Username: user.Username,
+            }),
           );
-        } else {
-          throw err;
+          purged++;
+          this.logger.info(
+            `  Deleted user '${user.Username}' [${String(purged)}].`,
+          );
+        } catch (err) {
+          if (isUserNotFoundException(err)) {
+            this.logger.debug(
+              `  User '${user.Username}' already deleted. Skipping.`,
+            );
+          } else {
+            throw err;
+          }
         }
       }
-    }
+      // 3. Move to the next page
+      paginationToken = res.PaginationToken;
+    } while (paginationToken);
 
     this.logger.info(`Purge complete. ${String(purged)} user(s) deleted.`);
     return purged;

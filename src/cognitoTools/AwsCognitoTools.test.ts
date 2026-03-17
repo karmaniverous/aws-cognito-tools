@@ -261,20 +261,19 @@ describe('AwsCognitoTools', () => {
           EstimatedNumberOfUsers: 2,
         },
       });
-      // ListUsers → user1
+      // ListUsers → page 1
       mockSend.mockResolvedValueOnce({
         Users: [{ Username: 'user1' }] as UserType[],
+        PaginationToken: 'token-1',
       });
       // AdminDeleteUser → user1
       mockSend.mockResolvedValueOnce({});
-      // ListUsers → user2
+      // ListUsers → page 2
       mockSend.mockResolvedValueOnce({
         Users: [{ Username: 'user2' }] as UserType[],
       });
       // AdminDeleteUser → user2
       mockSend.mockResolvedValueOnce({});
-      // ListUsers → empty
-      mockSend.mockResolvedValueOnce({ Users: [] });
 
       const count = await tools.purgeAllUsers({ userPoolId: 'pool-1' });
       expect(count).toBe(2);
