@@ -23,6 +23,7 @@
   "plugin": ["typedoc-plugin-mdn-links", "typedoc-plugin-replace-text"],
   "projectDocuments": [
     "./guides/aws-cognito-tools.md",
+    "./guides/cognito-plugin.md",
     "./CHANGELOG.md"
   ],
   "replaceText": {
