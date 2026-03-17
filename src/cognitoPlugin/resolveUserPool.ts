@@ -25,7 +25,7 @@ export const resolveUserPoolForCommand = async ({
   env,
   debug,
 }: {
-  ctx: { dotenv: Record<string, string | undefined> };
+  ctx: { dotenv: Record<string, string | undefined>; plugins?: unknown };
   cfg: CognitoPluginConfig;
   poolIdOpt?: string;
   env?: string;
@@ -43,7 +43,7 @@ export const resolveUserPoolForCommand = async ({
   const poolIdRaw = poolIdOpt ?? cfg.userPoolId ?? '$COGNITO_USER_POOL_ID';
   const poolId = dotenvExpand(poolIdRaw, envRef) || undefined;
 
-  const region = getAwsRegion(ctx as never);
+  const region = getAwsRegion(ctx);
   const tools = new AwsCognitoTools({
     clientConfig: region
       ? { region, logger: sdkLogger }

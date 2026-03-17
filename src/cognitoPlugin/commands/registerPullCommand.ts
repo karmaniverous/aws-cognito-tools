@@ -146,18 +146,34 @@ export const registerPullCommand = ({
 
       logger.info(`Found pool '${String(userPoolName)}' (${resolvedPoolId}).`);
 
-      // 2. Find the User Pool Client by name
+      // 2. Find the User Pool Client by name (paginated)
       logger.info(`Looking for client '${clientName}'...`);
-      const clientsRes: ListUserPoolClientsCommandOutput =
-        await tools.client.send(
-          new ListUserPoolClientsCommand({
-            UserPoolId: resolvedPoolId,
-            MaxResults: 60,
-          }),
+      let clientMatch:
+        | NonNullable<
+            ListUserPoolClientsCommandOutput['UserPoolClients']
+          >[number]
+        | undefined;
+      let clientNextToken: string | undefined;
+
+      do {
+        const clientsRes: ListUserPoolClientsCommandOutput =
+          await tools.client.send(
+            new ListUserPoolClientsCommand({
+              UserPoolId: resolvedPoolId,
+              MaxResults: 60,
+              ...(clientNextToken ? { NextToken: clientNextToken } : {}),
+            }),
+          );
+
+        clientMatch = (clientsRes.UserPoolClients ?? []).find(
+          (c) => c.ClientName === clientName,
         );
-      const clientMatch = (clientsRes.UserPoolClients ?? []).find(
-        (c) => c.ClientName === clientName,
-      );
+
+        if (clientMatch) break;
+
+        clientNextToken = clientsRes.NextToken;
+      } while (clientNextToken);
+
       if (!clientMatch?.ClientId) {
         throw new Error(
           `No User Pool Client found with name '${clientName}' in pool ${resolvedPoolId}.`,
