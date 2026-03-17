@@ -198,7 +198,13 @@ export class AwsCognitoTools {
 
     this.logger.debug(`Discovering User Pool for env '${env}'...`);
 
-    const maxResultsStr = process.env.COGNITO_LIST_USER_POOLS_MAX_RESULTS;
+    let maxResultsStr = process.env.COGNITO_LIST_USER_POOLS_MAX_RESULTS;
+    if (maxResultsStr && (Number(maxResultsStr) > 60 || +maxResultsStr <= 1)) {
+      this.logger.warn(
+        `COGNITO_LIST_USER_POOLS_MAX_RESULTS must be less than or equal to 60 and greater than or equal 1. Setting it to 60.`,
+      );
+      maxResultsStr = '60';
+    }
     const maxResults =
       maxResultsStr && !Number.isNaN(Number(maxResultsStr))
         ? Number(maxResultsStr)
