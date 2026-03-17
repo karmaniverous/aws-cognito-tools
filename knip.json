@@ -1,6 +1,6 @@
 {
   "entry": ["src/**/index.ts"],
-  "project": ["*/**", "!docs/**"],
+  "project": ["*/**", "!docs/**", "!smoke/**"],
   "ignoreDependencies": ["release-it"],
   "rules": {
     "exports": "off",
