@@ -199,7 +199,10 @@ export class AwsCognitoTools {
     this.logger.debug(`Discovering User Pool for env '${env}'...`);
 
     let maxResultsStr = process.env.COGNITO_LIST_USER_POOLS_MAX_RESULTS;
-    if (maxResultsStr && (Number(maxResultsStr) > 60 || +maxResultsStr <= 1)) {
+    if (
+      maxResultsStr &&
+      (Number(maxResultsStr) > 60 || Number(maxResultsStr) < 1)
+    ) {
       this.logger.warn(
         `COGNITO_LIST_USER_POOLS_MAX_RESULTS must be less than or equal to 60 and greater than or equal 1. Setting it to 60.`,
       );
@@ -332,18 +335,18 @@ export class AwsCognitoTools {
     );
 
     let purged = 0;
-    let paginationToken: string | undefined;
 
-    do {
-      // 1. Fetch a batch of users (Cognito maximum is 60)
+    // Fresh-list batching: each iteration fetches from the top of the pool
+    // (no PaginationToken). This is safe because deleting users shifts the
+    // index — reusing a pagination token after deletions may skip users.
+    for (;;) {
       const res = await this.client.send(
-        new ListUsersCommand({
-          UserPoolId: poolId,
-          ...(paginationToken ? { PaginationToken: paginationToken } : {}),
-        }),
+        new ListUsersCommand({ UserPoolId: poolId }),
       );
       const users = res.Users ?? [];
-      // 2. Iterate and delete the users in the current batch
+
+      if (users.length === 0) break;
+
       for (const user of users) {
         if (!user.Username) continue;
         try {
@@ -367,9 +370,7 @@ export class AwsCognitoTools {
           }
         }
       }
-      // 3. Move to the next page
-      paginationToken = res.PaginationToken;
-    } while (paginationToken);
+    }
 
     this.logger.info(`Purge complete. ${String(purged)} user(s) deleted.`);
     return purged;
