@@ -44,6 +44,22 @@ describe('AwsCognitoTools', () => {
       expect(tools.xray.enabled).toBe(false);
     });
 
+    it('creates instance with xray on when daemon address is set', async () => {
+      const xrayTools = await import('@karmaniverous/aws-xray-tools');
+      vi.mocked(xrayTools.shouldEnableXray).mockReturnValueOnce(true);
+      process.env.AWS_XRAY_DAEMON_ADDRESS = '127.0.0.1:2000';
+
+      const tools = new AwsCognitoTools({
+        clientConfig: { logger: noopLogger },
+        xray: 'on',
+      });
+      expect(tools.xray.mode).toBe('on');
+      expect(tools.xray.enabled).toBe(true);
+      expect(tools.xray.daemonAddress).toBe('127.0.0.1:2000');
+
+      delete process.env.AWS_XRAY_DAEMON_ADDRESS;
+    });
+
     it('exposes client as CognitoIdentityProviderClient', () => {
       const tools = new AwsCognitoTools({
         clientConfig: { logger: noopLogger },
@@ -320,6 +336,31 @@ describe('AwsCognitoTools', () => {
         (call: unknown[]) => call[0] instanceof AdminDeleteUserCommand,
       );
       expect(deleteCalls).toHaveLength(2);
+    });
+
+    it('skips already-deleted users (UserNotFoundException race)', async () => {
+      // resolveUserPool → DescribeUserPool
+      mockSend.mockResolvedValueOnce({
+        UserPool: {
+          Id: 'pool-1',
+          Name: 'test-dev',
+          EstimatedNumberOfUsers: 2,
+        },
+      });
+      // Fresh-list batch 1: returns 2 users
+      mockSend.mockResolvedValueOnce({
+        Users: [{ Username: 'user1' }, { Username: 'user2' }] as UserType[],
+      });
+      // AdminDeleteUser → user1 succeeds
+      mockSend.mockResolvedValueOnce({});
+      // AdminDeleteUser → user2 throws UserNotFoundException (deleted between list and delete)
+      mockSend.mockRejectedValueOnce({ name: 'UserNotFoundException' });
+      // Fresh-list batch 2: empty → done
+      mockSend.mockResolvedValueOnce({ Users: [] });
+
+      const count = await tools.purgeAllUsers({ userPoolId: 'pool-1' });
+      // Only user1 counted as deleted; user2 was skipped
+      expect(count).toBe(1);
     });
 
     it('returns 0 for an empty pool', async () => {
