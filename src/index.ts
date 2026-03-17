@@ -10,6 +10,9 @@
  * - Export the get-dotenv `cognitoPlugin` for mounting under `aws`.
  */
 
+export { cognitoPlugin } from './cognitoPlugin/cognitoPlugin';
+export type { CognitoMappings } from './cognitoPlugin/cognitoPluginConfig';
+export { resolveMapping } from './cognitoPlugin/resolveMapping';
 export {
   AwsCognitoTools,
   type AwsCognitoToolsOptions,
@@ -17,6 +20,3 @@ export {
   type PurgeAllUsersOptions,
   type ResolveUserPoolOptions,
 } from './cognitoTools/AwsCognitoTools';
-
-// Layer 2 — Plugin (placeholder, uncomment in Layer 2 checkpoint)
-// export { cognitoPlugin } from './cognitoPlugin/cognitoPlugin';
