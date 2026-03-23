@@ -4,12 +4,12 @@ stan-core:
     - docs
     - package-lock.json
   imports:
-    '@commander-js/extra-typings':
+    "@commander-js/extra-typings":
       - node_modules/@commander-js/extra-typings/index.d.ts
-    '@karmaniverous/aws-xray-tools':
+    "@karmaniverous/aws-xray-tools":
       - ./node_modules/@karmaniverous/aws-xray-tools/dist/index.d.ts
       - ./node_modules/@karmaniverous/aws-xray-tools/README.md
-    '@karmaniverous/get-dotenv':
+    "@karmaniverous/get-dotenv":
       - ./node_modules/@karmaniverous/get-dotenv/dist/cliHost.d.ts
       - ./node_modules/@karmaniverous/get-dotenv/dist/env-overlay.d.ts
       - ./node_modules/@karmaniverous/get-dotenv/dist/index.d.ts
