@@ -126,7 +126,7 @@ export const registerPullCommand = ({
       const clientName = dotenvExpand(clientNameRaw, envRef);
       if (!clientName) throw new Error('client-name is required.');
 
-      const env = bag.env ?? bag.defaultEnv;
+      const env = bag.env;
 
       // 1. Resolve the User Pool
       logger.info('Resolving User Pool...');
