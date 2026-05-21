@@ -44,7 +44,7 @@ export const registerPurgeCommand = ({
         );
       }
 
-      const env = bag.env ?? bag.defaultEnv;
+      const env = bag.env;
 
       const { tools, userPoolId, userPoolName } =
         await resolveUserPoolForCommand({
