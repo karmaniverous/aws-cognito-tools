@@ -173,7 +173,7 @@ export class AwsCognitoTools {
       return res.UserPool;
     } catch (err) {
       if (isResourceNotFoundException(err)) {
-        throw new Error(`User Pool ${poolId} not found.`);
+        throw new Error(`User Pool ${poolId} not found.`, { cause: err });
       }
       throw err;
     }
