@@ -26,12 +26,4 @@ coverage/
 # TypeDoc output
 docs/
 
-# STAN
-.stan/output/
-.stan/diff/
-.stan/dist/
-.stan/patch/
-.stan/imports/
-.stan/context/
-.stan/system/.docs.meta.json
 *.local
