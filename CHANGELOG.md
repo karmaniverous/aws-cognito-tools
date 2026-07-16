@@ -2,8 +2,17 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.1.3](https://github.com/karmaniverous/aws-cognito-tools/compare/0.1.2...0.1.3)
+
+- chore: update dependencies [`#14`](https://github.com/karmaniverous/aws-cognito-tools/pull/14)
+- cleanup [`e996a1e`](https://github.com/karmaniverous/aws-cognito-tools/commit/e996a1e84e3770a6278163209493487dff3c1afa)
+- chore: add copilot review instructions [`4a65658`](https://github.com/karmaniverous/aws-cognito-tools/commit/4a65658096b007e95cff7381da23b037700b1563)
+
 #### [0.1.2](https://github.com/karmaniverous/aws-cognito-tools/compare/0.1.1...0.1.2)
 
+> 21 May 2026
+
+- chore: release v0.1.2 [`a009b2b`](https://github.com/karmaniverous/aws-cognito-tools/commit/a009b2b2982e153cab75e39338f2153a851287a2)
 - updated getdotenv [`48c0a2a`](https://github.com/karmaniverous/aws-cognito-tools/commit/48c0a2a0827fa0fc0e8577eb83691dff494d1252)
 
 #### [0.1.1](https://github.com/karmaniverous/aws-cognito-tools/compare/0.1.0...0.1.1)
