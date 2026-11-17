@@ -4,7 +4,7 @@ title: AwsCognitoTools
 
 # AwsCognitoTools (programmatic API)
 
-`AwsCognitoTools` is an X-Ray-enabled wrapper around the AWS Cognito Identity Provider SDK v3 client. It provides composite convenience methods for operations that compose multiple SDK calls, while exposing the raw client for single-operation use.
+`AwsCognitoTools` is an X-Ray-enabled wrapper around the AWS Cognito Identity Provider SDK v3 client. It provides composite convenience methods for operations that compose multiple SDK calls, while exposing the raw client for single-operation use. The package root is independent of the optional get-dotenv peer.
 
 ## Constructor
 
@@ -23,14 +23,16 @@ const tools = new AwsCognitoTools({
 ### Options
 
 | Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `clientConfig` | `CognitoIdentityProviderClientConfig` | `{}` | AWS SDK v3 client config (region, credentials, logger, etc.) |
 | `xray` | `'auto' \| 'on' \| 'off'` | `'auto'` | X-Ray capture mode. `auto` enables only when `AWS_XRAY_DAEMON_ADDRESS` is set. |
+
+The validated `Logger` type and `assertLogger` helper are exported locally from this package; consumers do not need get-dotenv for the programmatic API.
 
 ### Public properties
 
 | Property | Type | Description |
-|----------|------|-------------|
+| --- | --- | --- |
 | `client` | `CognitoIdentityProviderClient` | The effective SDK client (X-Ray-captured when enabled). |
 | `clientConfig` | `CognitoIdentityProviderClientConfig` | The resolved config used to build the client. |
 | `logger` | `Logger` | Validated logger instance. |
@@ -60,9 +62,9 @@ Auto-paginated user listing with guardrails.
 ```ts
 const users = await tools.listAllUsers({
   userPoolId: pool.Id!,
-  maxResults: 500,    // stop after 500 users
-  maxPages: 10,       // stop after 10 pages
-  filter: "email ^= \"test\"",  // Cognito filter syntax
+  maxResults: 500, // stop after 500 users
+  maxPages: 10, // stop after 10 pages
+  filter: 'email ^= "test"', // Cognito filter syntax
   onPage: (users, page) => console.log(`Page ${page}: ${users.length}`),
 });
 ```

@@ -16,7 +16,10 @@ If you want the programmatic API instead, see the [AwsCognitoTools guide](aws-co
 
 ```bash
 npm i @karmaniverous/aws-cognito-tools
+npm i -D @karmaniverous/get-dotenv@^8.0.0
 ```
+
+get-dotenv is an optional peer: the package root works without it, while the plugin is exported only from `/get-dotenv`. The standalone bin prints the supported install routes when the peer is absent.
 
 You can either:
 
@@ -44,9 +47,10 @@ Mount the plugin under `aws`:
 ```ts
 import { createCli } from '@karmaniverous/get-dotenv/cli';
 import { awsPlugin } from '@karmaniverous/get-dotenv/plugins';
-import { cognitoPlugin } from '@karmaniverous/aws-cognito-tools';
+import { cognitoPlugin } from '@karmaniverous/aws-cognito-tools/get-dotenv';
 
 await createCli({
+  importMetaUrl: import.meta.url,
   alias: 'smoz',
   compose: (program) => program.use(awsPlugin().use(cognitoPlugin())),
 })();
@@ -97,7 +101,7 @@ The source object resolved against is:
 ### CLI options
 
 | Option | Default | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `--pool-id` | `$COGNITO_USER_POOL_ID` | User Pool ID (supports `$VAR` expansion) |
 | `--client-name` | `$COGNITO_USER_POOL_CLIENT_NAME` | Client name to find and describe |
 | `--template-extension` | `template` | Dotenv template extension for missing files |
@@ -120,7 +124,7 @@ Purge deletes all users from a Cognito User Pool. This is a **destructive** oper
 ### CLI options
 
 | Option | Default | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `--pool-id` | `$COGNITO_USER_POOL_ID` | User Pool ID (supports `$VAR` expansion) |
 | `--force` | `false` | Required to confirm deletion |
 

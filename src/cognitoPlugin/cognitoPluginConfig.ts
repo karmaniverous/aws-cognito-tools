@@ -7,7 +7,7 @@
  * - CognitoMappings type for pull mapping config.
  */
 
-import { z } from '@karmaniverous/get-dotenv/cliHost';
+import { z } from 'zod';
 
 /**
  * Schema for `aws cognito` plugin configuration.
@@ -65,22 +65,8 @@ export const cognitoPluginConfigSchema = z.object({
     .optional(),
 });
 
+/** Parsed configuration accepted by {@link cognitoPluginConfigSchema}. */
 export type CognitoPluginConfig = z.output<typeof cognitoPluginConfigSchema>;
-
-/**
- * CognitoMappings type — the shape of `pull.mappings` in plugin config.
- *
- * Structure: `scope → privacy → envVarName → jsonPath`
- *
- * Example:
- * ```
- * { env: { public: { "MY_VAR": "$.userPool.Id" } } }
- * ```
- */
-export type CognitoMappings = Record<
-  string,
-  Record<string, Record<string, string>>
->;
 
 /**
  * Resolve include/exclude from CLI flags and config defaults.

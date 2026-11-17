@@ -6,7 +6,7 @@ This package provides:
 
 - A tools-style wrapper that owns AWS client setup (including optional AWS X-Ray capture):
   - `AwsCognitoTools`
-- A get-dotenv plugin intended to be mounted under `aws`:
+- An optional get-dotenv plugin exported from `/get-dotenv` and intended to be mounted under `aws`:
   - `cognitoPlugin()` → `aws cognito pull|purge`
 - A CLI embedding get-dotenv with the cognito plugin:
   - `aws-cognito-tools`
@@ -22,7 +22,13 @@ This package provides:
 npm i @karmaniverous/aws-cognito-tools
 ```
 
-This package is ESM-only (Node >= 22).
+For the plugin or standalone CLI, also install the optional peer:
+
+```bash
+npm i -D @karmaniverous/get-dotenv@^8.0.0
+```
+
+The programmatic package root does not load get-dotenv. This package is ESM-only (Node >= 22.12.0).
 
 ## Quick start (programmatic)
 
@@ -47,7 +53,10 @@ const users = await tools.listAllUsers({
 // Escape hatch: use the fully configured SDK client directly
 import { AdminGetUserCommand } from '@aws-sdk/client-cognito-identity-provider';
 const user = await tools.client.send(
-  new AdminGetUserCommand({ UserPoolId: pool.Id!, Username: 'jane@example.com' }),
+  new AdminGetUserCommand({
+    UserPoolId: pool.Id!,
+    Username: 'jane@example.com',
+  }),
 );
 ```
 
@@ -58,12 +67,12 @@ Mount in your get-dotenv CLI:
 ```ts
 import { createCli } from '@karmaniverous/get-dotenv/cli';
 import { awsPlugin } from '@karmaniverous/get-dotenv/plugins';
-import { cognitoPlugin } from '@karmaniverous/aws-cognito-tools';
+import { cognitoPlugin } from '@karmaniverous/aws-cognito-tools/get-dotenv';
 
 await createCli({
+  importMetaUrl: import.meta.url,
   alias: 'smoz',
-  compose: (program) =>
-    program.use(awsPlugin().use(cognitoPlugin())),
+  compose: (program) => program.use(awsPlugin().use(cognitoPlugin())),
 })();
 ```
 
@@ -78,6 +87,8 @@ smoz --env dev aws cognito purge --force
 ```
 
 ## Quick start (standalone CLI)
+
+The bin prints local, global, and npx installation routes and exits 1 when the optional get-dotenv peer is absent.
 
 ```bash
 aws-cognito-tools --env dev aws cognito pull --client-name my-app-client-dev
@@ -118,7 +129,7 @@ Configure mappings in your get-dotenv config under `plugins['aws/cognito']`:
 The source object resolved against is:
 
 ```ts
-{ userPool, userPoolClient, region }
+const source = { userPool, userPoolClient, region };
 ```
 
 ## AWS X-Ray capture (optional)

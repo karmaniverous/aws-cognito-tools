@@ -7,11 +7,12 @@
 /**
  * Requirements addressed:
  * - Export a public `AwsCognitoTools`.
- * - Export the get-dotenv `cognitoPlugin` for mounting under `aws`.
+ * - Keep `resolveMapping` and `CognitoMappings` available without loading
+ *   the optional get-dotenv peer.
+ * - Export local public `Logger`.
  */
 
-export { cognitoPlugin } from './cognitoPlugin/cognitoPlugin';
-export type { CognitoMappings } from './cognitoPlugin/cognitoPluginConfig';
+export type { CognitoMappings } from './cognitoMappings';
 export { resolveMapping } from './cognitoPlugin/resolveMapping';
 export {
   AwsCognitoTools,
@@ -20,3 +21,4 @@ export {
   type PurgeAllUsersOptions,
   type ResolveUserPoolOptions,
 } from './cognitoTools/AwsCognitoTools';
+export { assertLogger, type Logger } from './logger';

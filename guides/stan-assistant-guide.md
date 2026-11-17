@@ -18,12 +18,12 @@ src/
     awsError.ts             Error classification (isAwsErrorOfType factory)
     awsError.test.ts        Error tests
 
-  cognitoPlugin/          ← Layer 2: get-dotenv plugin
+  cognitoPlugin/          ← Layer 2: get-dotenv plugin (except root-safe resolveMapping)
     cognitoPlugin.ts        Plugin registration (definePlugin, ns: 'cognito')
-    cognitoPluginConfig.ts  Zod schema + CognitoMappings type
+    cognitoPluginConfig.ts  Zod-backed plugin config schema
     cognitoPluginConfig.test.ts
     resolveUserPool.ts      Shared pool discovery for commands
-    resolveMapping.ts       JSONPath dot-notation resolver
+    resolveMapping.ts       Root-exported JSONPath resolver; no get-dotenv dependency
     resolveMapping.test.ts
     commands/
       types.ts              CLI + plugin API type aliases
@@ -32,10 +32,27 @@ src/
 
   cli/
     aws-cognito-tools/    ← Layer 3: Standalone CLI
-      index.ts              Embeds get-dotenv host + cognitoPlugin
+      index.ts              Dependency-free launcher
+      run.ts                Dynamically loaded get-dotenv host
 
-  index.ts                ← Public API surface
+  cognitoMappings.ts      ← Root-safe CognitoMappings type
+  logger.ts               ← Root-safe Logger contract
+  get-dotenv/index.ts     ← Optional-peer plugin entry
+  index.ts                ← Public programmatic API surface
 ```
+
+## Public imports
+
+```ts
+import {
+  AwsCognitoTools,
+  resolveMapping,
+  type CognitoMappings,
+} from '@karmaniverous/aws-cognito-tools';
+import { cognitoPlugin } from '@karmaniverous/aws-cognito-tools/get-dotenv';
+```
+
+The root does not load get-dotenv. `CognitoMappings` deliberately lives outside the zod config module.
 
 ## Key conventions
 
@@ -58,7 +75,7 @@ src/
 
 ## Quality gates
 
-Every PR must pass: `build`, `lint`, `typecheck`, `test`, `knip` — zero errors, zero warnings.
+Every PR must pass every gate in `AGENTS.md`, including packed runtime/types, bundle boundaries, mutation checks, docs, Ubuntu/Windows CI, and pack-check — zero errors, zero warnings.
 
 ## References
 
