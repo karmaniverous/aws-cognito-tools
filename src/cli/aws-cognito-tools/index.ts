@@ -1,28 +1,13 @@
 /**
- * Standalone CLI for aws-cognito-tools.
+ * Standalone bin entry. The get-dotenv-backed runner is dynamically imported
+ * so the optional peer can fail with an actionable installation hint.
  *
- * Embeds get-dotenv host with cognitoPlugin pre-mounted under awsPlugin.
- * Mirrors the pattern from aws-secrets-manager-tools.
+ * @packageDocumentation
  */
 
-import { createCli } from '@karmaniverous/get-dotenv/cli';
-import {
-  awsPlugin,
-  batchPlugin,
-  cmdPlugin,
-  initPlugin,
-} from '@karmaniverous/get-dotenv/plugins';
+import { launch } from './launcher';
 
-import { cognitoPlugin } from '../../cognitoPlugin/cognitoPlugin';
-
-await createCli({
-  alias: 'aws-cognito-tools',
-  compose: (program) =>
-    program
-      .use(
-        cmdPlugin({ asDefault: true, optionAlias: '-c, --cmd <command...>' }),
-      )
-      .use(batchPlugin())
-      .use(awsPlugin().use(cognitoPlugin()))
-      .use(initPlugin()),
-})();
+await launch(() => import('./run'), {
+  bin: 'aws-cognito-tools',
+  pkg: '@karmaniverous/aws-cognito-tools',
+});

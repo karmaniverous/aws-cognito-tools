@@ -29,10 +29,8 @@ import {
   readMergedOptions,
 } from '@karmaniverous/get-dotenv/cliHost';
 
-import {
-  type CognitoMappings,
-  resolveIncludeExclude,
-} from '../cognitoPluginConfig';
+import type { CognitoMappings } from '../../cognitoMappings';
+import { resolveIncludeExclude } from '../cognitoPluginConfig';
 import { resolveMapping } from '../resolveMapping';
 import { resolveUserPoolForCommand } from '../resolveUserPool';
 import type { CognitoPluginApi, CognitoPluginCli } from './types';
