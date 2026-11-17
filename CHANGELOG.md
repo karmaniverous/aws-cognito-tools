@@ -2,11 +2,23 @@
 
 All notable changes to this project will be documented in this file. Dates are displayed in UTC.
 
+#### [0.2.0](https://github.com/karmaniverous/aws-cognito-tools/compare/0.1.3...0.2.0)
+
+- [GH-13] Support get-dotenv 8 package contract [`#16`](https://github.com/karmaniverous/aws-cognito-tools/pull/16)
+- [GH-13] feat: support get-dotenv 8 package contract [`8af6c17`](https://github.com/karmaniverous/aws-cognito-tools/commit/8af6c17f0fe86437bacad5e1df0e6534ae0ceb84)
+- [GH-13] chore: eliminate npm install warnings [`3768f76`](https://github.com/karmaniverous/aws-cognito-tools/commit/3768f76c2a1b77dfceca34ea6c540d2727153097)
+- [GH-13] chore(deps): require released get-dotenv ^8.0.0 [`0e0db50`](https://github.com/karmaniverous/aws-cognito-tools/commit/0e0db5092685a8bd5a82c22810fe1a66d5e40ae3)
+- npm audit fix [`52e19be`](https://github.com/karmaniverous/aws-cognito-tools/commit/52e19be040594920acb2e047a8ad958bed073704)
+- [GH-13] fix: address migration review findings [`dacf6c7`](https://github.com/karmaniverous/aws-cognito-tools/commit/dacf6c7fad2ff993e73811bc61344ecaa60114d3)
+
 #### [0.1.3](https://github.com/karmaniverous/aws-cognito-tools/compare/0.1.2...0.1.3)
+
+> 16 July 2026
 
 - chore: update dependencies [`#14`](https://github.com/karmaniverous/aws-cognito-tools/pull/14)
 - cleanup [`e996a1e`](https://github.com/karmaniverous/aws-cognito-tools/commit/e996a1e84e3770a6278163209493487dff3c1afa)
 - chore: add copilot review instructions [`4a65658`](https://github.com/karmaniverous/aws-cognito-tools/commit/4a65658096b007e95cff7381da23b037700b1563)
+- chore: release v0.1.3 [`e1d3a42`](https://github.com/karmaniverous/aws-cognito-tools/commit/e1d3a4246842c5192678805eb09c32031895c63b)
 
 #### [0.1.2](https://github.com/karmaniverous/aws-cognito-tools/compare/0.1.1...0.1.2)
 
