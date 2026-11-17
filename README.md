@@ -129,9 +129,7 @@ Configure mappings in your get-dotenv config under `plugins['aws/cognito']`:
 The source object resolved against is:
 
 ```ts
-{
-  (userPool, userPoolClient, region);
-}
+const source = { userPool, userPoolClient, region };
 ```
 
 ## AWS X-Ray capture (optional)

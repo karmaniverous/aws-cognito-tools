@@ -18,12 +18,12 @@ src/
     awsError.ts             Error classification (isAwsErrorOfType factory)
     awsError.test.ts        Error tests
 
-  cognitoPlugin/          ← Layer 2: get-dotenv plugin
+  cognitoPlugin/          ← Layer 2: get-dotenv plugin (except root-safe resolveMapping)
     cognitoPlugin.ts        Plugin registration (definePlugin, ns: 'cognito')
     cognitoPluginConfig.ts  Zod-backed plugin config schema
     cognitoPluginConfig.test.ts
     resolveUserPool.ts      Shared pool discovery for commands
-    resolveMapping.ts       JSONPath dot-notation resolver
+    resolveMapping.ts       Root-exported JSONPath resolver; no get-dotenv dependency
     resolveMapping.test.ts
     commands/
       types.ts              CLI + plugin API type aliases
