@@ -7,10 +7,10 @@ const names = {
   pkg: '@karmaniverous/aws-cognito-tools',
 };
 const expectedHint = [
-  'aws-cognito-tools needs @karmaniverous/get-dotenv ^8.0.0-0. Install it:',
-  '  local:  npm i -D @karmaniverous/get-dotenv@^8.0.0-0',
-  '  global: npm i -g @karmaniverous/get-dotenv@^8.0.0-0',
-  '  npx:    npx -p @karmaniverous/get-dotenv@^8.0.0-0 -p @karmaniverous/aws-cognito-tools aws-cognito-tools',
+  'aws-cognito-tools needs @karmaniverous/get-dotenv ^8.0.0. Install it:',
+  '  local:  npm i -D @karmaniverous/get-dotenv@^8.0.0',
+  '  global: npm i -g @karmaniverous/get-dotenv@^8.0.0',
+  '  npx:    npx -p @karmaniverous/get-dotenv@^8.0.0 -p @karmaniverous/aws-cognito-tools aws-cognito-tools',
 ].join('\n');
 const missingGetDotenv = Object.assign(
   new Error(

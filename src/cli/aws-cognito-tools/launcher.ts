@@ -1,11 +1,11 @@
 /** Dependency-free bin launcher for the optional get-dotenv peer. */
 
-const getDotenv = '@karmaniverous/get-dotenv@^8.0.0-0';
+const getDotenv = '@karmaniverous/get-dotenv@^8.0.0';
 
 /** Build the optional-peer installation hint for a package bin. */
 export const getDotenvInstallHint = (bin: string, pkg: string): string =>
   [
-    `${bin} needs @karmaniverous/get-dotenv ^8.0.0-0. Install it:`,
+    `${bin} needs @karmaniverous/get-dotenv ^8.0.0. Install it:`,
     `  local:  npm i -D ${getDotenv}`,
     `  global: npm i -g ${getDotenv}`,
     `  npx:    npx -p ${getDotenv} -p ${pkg} ${bin}`,

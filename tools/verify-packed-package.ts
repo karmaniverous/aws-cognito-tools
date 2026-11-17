@@ -92,10 +92,10 @@ try {
       '--help',
     ]);
     const expected = [
-      'aws-cognito-tools needs @karmaniverous/get-dotenv ^8.0.0-0. Install it:',
-      '  local:  npm i -D @karmaniverous/get-dotenv@^8.0.0-0',
-      '  global: npm i -g @karmaniverous/get-dotenv@^8.0.0-0',
-      '  npx:    npx -p @karmaniverous/get-dotenv@^8.0.0-0 -p @karmaniverous/aws-cognito-tools aws-cognito-tools',
+      'aws-cognito-tools needs @karmaniverous/get-dotenv ^8.0.0. Install it:',
+      '  local:  npm i -D @karmaniverous/get-dotenv@^8.0.0',
+      '  global: npm i -g @karmaniverous/get-dotenv@^8.0.0',
+      '  npx:    npx -p @karmaniverous/get-dotenv@^8.0.0 -p @karmaniverous/aws-cognito-tools aws-cognito-tools',
     ].join('\n');
     if (bin.status !== 1 || bin.stderr.trim() !== expected || bin.stdout !== '')
       throw new Error(`bin contract failed:\n${bin.stderr}${bin.stdout}`);

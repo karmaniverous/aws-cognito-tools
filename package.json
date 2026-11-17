@@ -28,7 +28,7 @@
   "description": "X-Ray-enabled AWS Cognito client wrapper and get-dotenv CLI plugin.",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@karmaniverous/get-dotenv": "^8.0.0-0",
+    "@karmaniverous/get-dotenv": "^8.0.0",
     "@rollup/plugin-alias": "^6.0.1",
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-json": "^6.1.0",
@@ -165,7 +165,7 @@
   "types": "dist/index.d.ts",
   "version": "0.1.3",
   "peerDependencies": {
-    "@karmaniverous/get-dotenv": "^8.0.0-0"
+    "@karmaniverous/get-dotenv": "^8.0.0"
   },
   "allowScripts": {
     "esbuild": true,

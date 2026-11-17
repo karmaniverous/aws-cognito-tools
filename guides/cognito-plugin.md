@@ -16,7 +16,7 @@ If you want the programmatic API instead, see the [AwsCognitoTools guide](aws-co
 
 ```bash
 npm i @karmaniverous/aws-cognito-tools
-npm i -D @karmaniverous/get-dotenv@^8.0.0-0
+npm i -D @karmaniverous/get-dotenv@^8.0.0
 ```
 
 get-dotenv is an optional peer: the package root works without it, while the plugin is exported only from `/get-dotenv`. The standalone bin prints the supported install routes when the peer is absent.
